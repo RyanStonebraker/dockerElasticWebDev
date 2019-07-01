@@ -1,0 +1,10 @@
+FROM ubuntu:16.04
+
+RUN mkdir /var/www
+COPY scripts/requirements.txt /var/www
+WORKDIR /var/www
+RUN pip install -r requirements.txt
+
+COPY . /var/www
+WORKDIR /var/www
+CMD ["scripts/wait-for-elasticsearch.sh", "http://localhost:9200", "--" ,"python", "scripts/populate.py"]

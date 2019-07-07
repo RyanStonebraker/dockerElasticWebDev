@@ -16,24 +16,17 @@ services:
     image: docker.elastic.co/kibana/kibana:6.3.2
     ports:
       - "5601:5601"
-  # populate:
-  #     image: ubuntu:16.04
-  #     command: scripts/populate.py
-      # working_dir: /src
-      # links:
-      #     - elasticsearch:elasticsearch
-      # volumes:
-      #     - .:/src
-      # environment:
-      #     - WAIT_COMMAND=[ $$(curl --write-out %{http_code} --silent --output /dev/null http://elastic:9200/_cat/health?h=st) = 200 ]
-      #     - WAIT_START_CMD=python scripts/populate.py
-      #     - WAIT_SLEEP=2
-      #     - WAIT_LOOPS=10
-  populate:
+  populate_flask:
+    stdin_open: true
+    tty: true
     build:
       context: .
       dockerfile: Dockerfile-es
       args:
         buildno: 1
+    ports:
+      - "80:8080"
+    links:
+      - "elasticsearch:elasticsearch"
     depends_on:
     - elasticsearch

@@ -1,15 +1,19 @@
-# /usr/bin/env python
+#!/usr/bin/env python3
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import time
 
-time.sleep(5)
-es = Elasticsearch()
+es = Elasticsearch("http://elasticsearch:9200")
+while True:
+    print("Waiting for elastic search...")
+    if es.ping():
+        print("Connected!")
+        break
+    time.sleep(1)
 
-doc = {
-    'author': 'kimchy',
-    'text': 'Elasticsearch: cool. bonsai cool.',
+body = {
+    'test': "test",
     'timestamp': datetime.now(),
 }
-res = es.index(index="test-index", doc_type='tweet', id=1, body=doc)
-print(res['result'])
+print(es.index(index="test", doc_type='default', body=body))
